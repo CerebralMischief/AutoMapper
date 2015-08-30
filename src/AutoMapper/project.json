@@ -1,32 +1,106 @@
 {
-    "version": "4.0.0-*",
-    "dependencies": {
-    },
+    "version": "4.1.0-*",
+
+    "compilationOptions": { "keyFile": "..\\AutoMapper.snk" },
 
     "frameworks": {
-        "aspnet50": {
+
+        ".NETPortable,Version=v4.5,Profile=Profile259": {
+            "frameworkAssemblies": {
+                "System.Collections": "",
+                "System.Runtime": "",
+                "System.Linq": "",
+                "System.Linq.Expressions": "",
+                "System.Linq.Queryable": "",
+                "System.Text.RegularExpressions": "",
+                "System.Reflection": "",
+                "System.Reflection.Extensions": "",
+                "System.Diagnostics.Debug": "",
+                "System.ObjectModel": "",
+                "System.Runtime.Extensions": "",
+                "System.Threading": ""
+            },
+            "compilationOptions": { "define": [ "PORTABLE" ] }
+        },
+        "net45": {
+            "compilationOptions": {
+                "define": [ "NET4" ]
+            },
+        },
+        "net40": {
             "dependencies": {
+                "Microsoft.Bcl": "1.1.9"
+            },
+            "compilationOptions": {
+                "define": [ "NET40" ]
             }
         },
-        "aspnetcore50": {
+        "sl5": {
+            "frameworkAssemblies": {
+                "System": "",
+                "System.Core": "",
+                "mscorlib": ""
+            },
+            "compilationOptions": {
+                "define": [ "SILVERLIGHT" ]
+            }
+        },
+        "wp8": {
+            "frameworkAssemblies": {
+                "mscorlib": "",
+                "System": "",
+                "System.Core": ""
+            },
+            "compilationOptions": {
+                "define": [ "SILVERLIGHT" ]
+            }
+        },
+        "wpa81": {
+            "frameworkAssemblies": {
+                "System.Collections": "",
+                "System.Runtime": "",
+                "System.Linq": "",
+                "System.Linq.Expressions": "",
+                "System.Linq.Queryable": "",
+                "System.Text.RegularExpressions": "",
+                "System.Reflection": "",
+                "System.Reflection.Extensions": "",
+                "System.Diagnostics.Debug": "",
+                "System.ObjectModel": "",
+                "System.Runtime.Extensions": "",
+                "System.Threading": ""
+            },
+            "compilationOptions": {
+                "define": [ "WINDOWS_PHONE" ]
+            }
+        },
+        "netcore45": {
+            "frameworkAssemblies": {
+                "System.Collections": "",
+                "System.Runtime": "",
+                "System.Linq": "",
+                "System.Linq.Expressions": "",
+                "System.Linq.Queryable": "",
+                "System.Text.RegularExpressions": "",
+                "System.Reflection": "",
+                "System.Reflection.Extensions": "",
+                "System.Diagnostics.Debug": "",
+                "System.ObjectModel": "",
+                "System.Runtime.Extensions": "",
+                "System.Threading": ""
+            },
+            "compilationOptions": {
+                "define": [ "NETCORE45" ]
+            }
+        },
+        "dotnet": {
             "dependencies": {
-                "System.Runtime": "4.0.20-beta-*",
-                "System.Linq.Expressions": "4.0.0.0-beta-*",
-                "System.Linq": "4.0.0.0-beta-*",
-                "System.Reflection": "4.0.10.0-beta-*",
-                "System.Text.RegularExpressions": "4.0.10.0-beta-*",
-                "System.Reflection.TypeExtensions": "4.0.0.0-beta-*",
-                "System.Reflection.Emit": "4.0.0.0-beta-*",
-                "System.Threading": "4.0.10.0-beta-*",
-                "System.Runtime.Extensions": "4.0.10.0-beta-*",
-                "System.Reflection.Extensions": "4.0.0.0-beta-*",
-                "System.Collections.Specialized": "4.0.0.0-beta-*",
-                "System.Collections.Concurrent": "4.0.10.0-beta-*",
-                "System.ComponentModel.TypeConverter": "4.0.0.0-beta-*",
-                "System.Reflection.Primitives": "4.0.0.0-beta-*",
-                "System.Linq.Queryable": "4.0.0.0-beta-*",
-                "System.Diagnostics.Debug": "4.0.10.0-beta-*",
-                "System.ObjectModel": "4.0.10.0-beta-*"
+                "Microsoft.NETCore": "5.0.0",
+                "Microsoft.NETCore.Portable.Compatibility": "1.0.0"
+            },
+            "imports": "portable-net452+win81",
+            "compilationOptions": {
+                "define": [ "DNXCORE50" ]
             }
         }
     }

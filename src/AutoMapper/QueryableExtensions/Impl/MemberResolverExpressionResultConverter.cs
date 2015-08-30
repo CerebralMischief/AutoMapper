@@ -4,11 +4,11 @@ namespace AutoMapper.QueryableExtensions.Impl
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Internal;
 
     public class MemberResolverExpressionResultConverter : IExpressionResultConverter
     {
-        public ExpressionResolutionResult GetExpressionResolutionResult(ExpressionResolutionResult expressionResolutionResult, PropertyMap propertyMap, IValueResolver valueResolver)
+        public ExpressionResolutionResult GetExpressionResolutionResult(
+            ExpressionResolutionResult expressionResolutionResult, PropertyMap propertyMap, IValueResolver valueResolver)
         {
             var oldParameter = propertyMap.CustomExpression.Parameters.Single();
             var newParameter = expressionResolutionResult.ResolutionExpression;
@@ -20,7 +20,8 @@ namespace AutoMapper.QueryableExtensions.Impl
             return new ExpressionResolutionResult(currentChild, currentChildType);
         }
 
-        public bool CanGetExpressionResolutionResult(ExpressionResolutionResult expressionResolutionResult, IValueResolver valueResolver)
+        public bool CanGetExpressionResolutionResult(ExpressionResolutionResult expressionResolutionResult,
+            IValueResolver valueResolver)
         {
             return valueResolver is IMemberResolver;
         }
@@ -39,7 +40,7 @@ namespace AutoMapper.QueryableExtensions.Impl
             protected override Expression VisitParameter(ParameterExpression node)
             {
                 // replace all old param references with new ones
-                return node.Type == oldParameter.Type ? newParameter : node;
+                return node == oldParameter ? newParameter : node;
             }
 
             protected override Expression VisitMember(MemberExpression node)
@@ -52,6 +53,5 @@ namespace AutoMapper.QueryableExtensions.Impl
                 return Expression.MakeMemberAccess(newObj, newMember);
             }
         }
-
     }
 }
