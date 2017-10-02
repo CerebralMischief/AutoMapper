@@ -2,47 +2,42 @@ using System.Collections.Generic;
 
 namespace AutoMapper.Mappers
 {
-    public static class MapperRegistry
+    internal static class MapperRegistry
     {
-        private static readonly IObjectMapper[] _initialMappers =
+        public static IList<IObjectMapper> Mappers() => new List<IObjectMapper>
         {
+            new NullableSourceMapper(),
+            new NullableDestinationMapper(),
             new ExpressionMapper(), 
-            new TypeMapMapper(TypeMapObjectMapperRegistry.Mappers),
-            new StringMapper(),
-            new AssignableArrayMapper(), 
             new FlagsEnumMapper(),
-            new EnumMapper(),
-            new PrimitiveArrayMapper(),
+            new StringToEnumMapper(), 
+            new EnumToStringMapper(),
+            new EnumToEnumMapper(), 
+            new EnumToUnderlyingTypeMapper(),
+            new UnderlyingTypeToEnumMapper(),
+            new MultidimensionalArrayMapper(),
             new ArrayMapper(),
             new EnumerableToDictionaryMapper(),
+#if NETSTANDARD1_3 || NET45 || NET40
+            new NameValueCollectionMapper(),
+#endif
             new DictionaryMapper(),
             new ReadOnlyCollectionMapper(),
+            new HashSetMapper(),
             new CollectionMapper(),
             new EnumerableMapper(),
             new AssignableMapper(),
-            new NullableSourceMapper(),
-            new NullableMapper(),
+            new ConvertMapper(),
+            new StringMapper(),
+#if NETSTANDARD1_3 || NET45 || NET40
+            new TypeConverterMapper(),
+#endif
             new ImplicitConversionOperatorMapper(),
-            new ExplicitConversionOperatorMapper()
+            new ExplicitConversionOperatorMapper(),
+            new FromStringDictionaryMapper(),
+            new ToStringDictionaryMapper(),
+            new FromDynamicMapper(),
+            new ToDynamicMapper()
         };
-
-        private static readonly List<IObjectMapper> _mappers = new List<IObjectMapper>(_initialMappers);
-
-        /// <summary>
-        /// Extension point for modifying list of object mappers
-        /// </summary>
-        public static IList<IObjectMapper> Mappers
-        {
-            get { return _mappers; }
-        }
-
-        /// <summary>
-        /// Reset mapper registry to built-in values
-        /// </summary>
-        public static void Reset()
-        {
-            _mappers.Clear();
-            _mappers.AddRange(_initialMappers);
-        }
     }
 }

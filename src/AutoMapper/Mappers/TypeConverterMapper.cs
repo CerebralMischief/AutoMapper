@@ -1,58 +1,51 @@
 using System;
 using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Reflection;
+using AutoMapper.Configuration;
+using static System.Linq.Expressions.Expression;
 
 namespace AutoMapper.Mappers
 {
-    using Internal;
+#if NETSTANDARD1_3 || NET45 || NET40
+    public class TypeConverterMapper : IObjectMapper
+    {
+        private static TDestination Map<TSource, TDestination>(TSource source)
+        {
+            var typeConverter = GetTypeConverter(typeof(TSource));
 
-	public class TypeConverterMapper : IObjectMapper
-	{
-		public object Map(ResolutionContext context, IMappingEngineRunner mapper)
-		{
-			if (context.SourceValue == null)
-			{
-				return mapper.CreateObject(context);
-			}
-			Func<object> converter = GetConverter(context);
-			return converter != null ? converter() : null;
-		}
-		private static Func<object> GetConverter(ResolutionContext context)
-		{
-			TypeConverter typeConverter = GetTypeConverter(context.SourceType);
-			if (typeConverter.CanConvertTo(context.DestinationType))
-				return () => typeConverter.ConvertTo(context.SourceValue, context.DestinationType);
-            if (context.DestinationType.IsNullableType() && typeConverter.CanConvertTo(Nullable.GetUnderlyingType(context.DestinationType)))
-                return () => typeConverter.ConvertTo(context.SourceValue, Nullable.GetUnderlyingType(context.DestinationType));
+            if (typeConverter.CanConvertTo(typeof(TDestination)))
+            {
+                return (TDestination)typeConverter.ConvertTo(source, typeof(TDestination));
+            }
 
-			typeConverter = GetTypeConverter(context.DestinationType);
-			if(typeConverter.CanConvertFrom(context.SourceType))
-				return () => typeConverter.ConvertFrom(context.SourceValue);
+            typeConverter = GetTypeConverter(typeof(TDestination));
+            if (typeConverter.CanConvertFrom(typeof(TSource)))
+            {
+                return (TDestination)typeConverter.ConvertFrom(source);
+            }
 
-			return null;
-		}
-		public bool IsMatch(ResolutionContext context)
-		{
-			return GetConverter(context) != null;
-		}
+            return default(TDestination);
+        }
 
-		private static TypeConverter GetTypeConverter(Type type)
-		{
-#if !SILVERLIGHT
-			return TypeDescriptor.GetConverter(type);
-#else
-			var attributes = type.GetCustomAttributes(typeof(TypeConverterAttribute), false);
+        private static readonly MethodInfo MapMethodInfo = typeof(TypeConverterMapper).GetDeclaredMethod(nameof(Map));
 
-			if (attributes.Length != 1)
-				return new TypeConverter();
+        public bool IsMatch(TypePair context)
+        {
+            var sourceTypeConverter = GetTypeConverter(context.SourceType);
+            var destTypeConverter = GetTypeConverter(context.DestinationType);
 
-			var converterAttribute = (TypeConverterAttribute)attributes[0];
-			var converterType = Type.GetType(converterAttribute.ConverterTypeName);
+            return sourceTypeConverter.CanConvertTo(context.DestinationType) || destTypeConverter.CanConvertFrom(context.SourceType);
+        }
 
-			if (converterType == null)
-                return new TypeConverter();
+        public Expression MapExpression(IConfigurationProvider configurationProvider, ProfileMap profileMap,
+            PropertyMap propertyMap, Expression sourceExpression, Expression destExpression,
+            Expression contextExpression) =>
+            Call(null,
+                MapMethodInfo.MakeGenericMethod(sourceExpression.Type, destExpression.Type),
+                sourceExpression);
 
-			return Activator.CreateInstance(converterType) as TypeConverter;
+        private static TypeConverter GetTypeConverter(Type type) => TypeDescriptor.GetConverter(type);
+    }
 #endif
-		}
-	}
 }

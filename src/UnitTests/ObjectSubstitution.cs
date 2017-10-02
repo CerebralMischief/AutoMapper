@@ -3,7 +3,7 @@
     namespace ObjectSubstitution
     {
         using System;
-        using Should;
+        using Shouldly;
         using Xunit;
 
         public abstract class Animal { }
@@ -31,18 +31,15 @@
         {
             private AnimalDto _animalDto;
 
-            protected override void Establish_context()
+            protected override MapperConfiguration Configuration { get; } = new MapperConfiguration(cfg =>
             {
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<Animal, AnimalDto>()
-                        .Substitute(CastToEntity)
-                        .Include<Cat, CatDto>()
-                        .Include<Dog, DogDto>();
-                    cfg.CreateMap<Cat, CatDto>();
-                    cfg.CreateMap<Dog, DogDto>();
-                });
-            }
+                cfg.CreateMap<Animal, AnimalDto>()
+                    .Substitute(CastToEntity)
+                    .Include<Cat, CatDto>()
+                    .Include<Dog, DogDto>();
+                cfg.CreateMap<Cat, CatDto>();
+                cfg.CreateMap<Dog, DogDto>();
+            });
 
             protected override void Because_of()
             {
@@ -56,7 +53,7 @@
             [Fact]
             public void Should_substitute_correct_object()
             {
-                _animalDto.ShouldBeType<CatDto>();
+                _animalDto.ShouldBeOfType<CatDto>();
             }
 
             private static object CastToEntity(Animal entity)
